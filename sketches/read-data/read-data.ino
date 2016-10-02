@@ -58,7 +58,7 @@ void loop() {
 
   // READ METRICS
   lightLevel = analogRead(LIGHTLEVELPIN);
-  if (lightLevel != NAN || isnan(lightLevel)) {
+  if (lightLevel != NAN && !isnan(lightLevel)) {
     // Encode the data as JSON and send back to an altar-manager over serial
     Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"lightLevel\",\"metricUnits\":\"lumens\",\"metricValue\":");
     Serial.print(lightLevel, DEC);
@@ -66,14 +66,14 @@ void loop() {
   }
 
   float t = dht.readTemperature();
-  if (t != NAN || isnan(t)) {
+  if (t != NAN && !isnan(t)) {
     Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"airTemperature\",\"metricUnits\":\"°C\",\"metricValue\":");
     Serial.print(t, DEC);
     Serial.println("}");
   }
 
   float h = dht.readHumidity();
-  if (h != NAN || isnan(h)) {
+  if (h != NAN && !isnan(h)) {
     Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"humidity\",\"metricUnits\":\"%\",\"metricValue\":");
     Serial.print(h, DEC);
     Serial.println("}");
