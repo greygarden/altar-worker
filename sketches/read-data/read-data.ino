@@ -35,6 +35,8 @@ void setup() {
   // Set the PWM pins as output.
   pinMode(7, INPUT);
   pinMode(EXHAUSTPWMPIN, OUTPUT); // sets the pin as output
+
+  pwmWrite(EXHAUSTPWMPIN, 255);
 }
 
 void loop() {
@@ -56,28 +58,36 @@ void loop() {
 
   // READ METRICS
   lightLevel = analogRead(LIGHTLEVELPIN);
-  // Encode the data as JSON and send back to an altar-manager over serial
-  Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"lightLevel\",\"metricUnits\":\"lumens\",\"metricValue\":");
-  Serial.print(lightLevel, DEC);
-  Serial.println("}");
+  if (lightLevel != NAN) {
+    // Encode the data as JSON and send back to an altar-manager over serial
+    Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"lightLevel\",\"metricUnits\":\"lumens\",\"metricValue\":");
+    Serial.print(lightLevel, DEC);
+    Serial.println("}");
+  }
 
   float t = dht.readTemperature();
-  Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"airTemperature\",\"metricUnits\":\"°C\",\"metricValue\":");
-  Serial.print(t, DEC);
-  Serial.println("}");
+  if (t != NAN) {
+    Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"airTemperature\",\"metricUnits\":\"°C\",\"metricValue\":");
+    Serial.print(t, DEC);
+    Serial.println("}");
+  }
 
   float h = dht.readHumidity();
-  Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"humidity\",\"metricUnits\":\"%\",\"metricValue\":");
-  Serial.print(h, DEC);
-  Serial.println("}");
+  if (h != NAN) {
+    Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"humidity\",\"metricUnits\":\"%\",\"metricValue\":");
+    Serial.print(h, DEC);
+    Serial.println("}");
+  }
 
   pulseDuration = pulseIn(7, HIGH);
   double frequencyRead = 1000000/pulseDuration;
   float exhaustRPM = frequencyRead / 2 * 60;
-  // Encode the data as JSON and send back to an altar-manager over serial
-  Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"exhaustFanSpeed\",\"metricUnits\":\"RPM\",\"metricValue\":");
-  Serial.print(exhaustRPM, DEC);
-  Serial.println("}");
+  if (pulseDuration != 0) {
+    // Encode the data as JSON and send back to an altar-manager over serial
+    Serial.print("{\"workerIdentifier\":\"" + UUID + "\",\"metricName\":\"exhaustFanSpeed\",\"metricUnits\":\"RPM\",\"metricValue\":");
+    Serial.print(exhaustRPM, DEC);
+    Serial.println("}"); 
+  }
   
   delay(5000);
 }
