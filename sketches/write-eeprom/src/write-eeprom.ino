@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 
-String stringToWrite = "A9560361-CC9F-4C7A-9965-C31A9E344EA8";
+String stringToWrite = "45CF96F8-990F-44DD-8FD9-D5D1FB23A762";
 int currentCharPosition = 0;
 
 void setup() {
@@ -15,7 +15,7 @@ void loop() {
       these values will remain there when the board is
       turned off.
     ***/
-    
+
     EEPROM.write(currentCharPosition, stringToWrite.charAt(currentCharPosition));
 
     /***
